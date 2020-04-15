@@ -37,6 +37,7 @@ func beginQuiz(problems []Problem) int {
 		fmt.Printf("What is %s\n", problem.q)
 		var answer string
 		fmt.Scanf("%s\n", &answer)
+
 		if strings.TrimSpace(answer) != strings.TrimSpace(problem.a) {
 			fmt.Printf("Incorrect!!!.Expected %s Got %s\n", problem.a, answer)
 		} else {
