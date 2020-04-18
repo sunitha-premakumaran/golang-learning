@@ -17,6 +17,10 @@
 - Channels
     - the way in which two gorountines communicate to synchronize their execution and share data
 
+- Select Statement
+    - The `select` statement lets a goroutine wait on multiple communication operations.
+    - A select blocks until one of its cases can run, then it executes that case. It chooses one at random if multiple are ready.
+
 ### Solutions
 - [Quiz based on csv file](./gophercises-quiz/main.go)
 

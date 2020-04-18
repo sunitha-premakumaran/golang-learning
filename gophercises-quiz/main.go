@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 // Problem Structure for quiz
@@ -33,16 +34,28 @@ func readFile(filename string) [][]string {
 
 func beginQuiz(problems []Problem) int {
 	var score int
+	timer := time.NewTimer(30 * time.Second)
+	answerChannel := make(chan string)
+
 	for _, problem := range problems {
 		fmt.Printf("What is %s\n", problem.q)
-		var answer string
-		fmt.Scanf("%s\n", &answer)
 
-		if strings.TrimSpace(answer) != strings.TrimSpace(problem.a) {
-			fmt.Printf("Incorrect!!!.Expected %s Got %s\n", problem.a, answer)
-		} else {
-			score++
-			fmt.Println("Correct!!!!!")
+		go func() {
+			var ans string
+			fmt.Scanf("%s\n", &ans)
+			answerChannel <- ans
+		}()
+
+		select {
+		case <-timer.C:
+			return score
+		case answer := <-answerChannel:
+			if strings.TrimSpace(answer) != strings.TrimSpace(problem.a) {
+				fmt.Printf("Incorrect!!!.Expected %s Got %s\n", problem.a, answer)
+			} else {
+				score++
+				fmt.Println("Correct!!!!!")
+			}
 		}
 	}
 	return score
