@@ -18,7 +18,7 @@ func main() {
 	array := readFile("./problem.csv")
 	problems := generateProblem(array)
 	score := beginQuiz(problems)
-	fmt.Printf("Your Total score %d\n", score)
+	fmt.Printf("Your Total score %d out of %d\n", score, len(problems))
 	os.Exit(1)
 }
 
@@ -34,11 +34,10 @@ func readFile(filename string) [][]string {
 
 func beginQuiz(problems []Problem) int {
 	var score int
-	timer := time.NewTimer(30 * time.Second)
+	timer := time.NewTimer(time.Duration(30) * time.Second)
 	answerChannel := make(chan string)
-
-	for _, problem := range problems {
-		fmt.Printf("What is %s\n", problem.q)
+	for i, problem := range problems {
+		fmt.Printf("%d.What is %s\n", i+1, problem.q)
 
 		go func() {
 			var ans string
@@ -51,13 +50,13 @@ func beginQuiz(problems []Problem) int {
 			return score
 		case answer := <-answerChannel:
 			if strings.TrimSpace(answer) != strings.TrimSpace(problem.a) {
-				fmt.Printf("Incorrect!!!.Expected %s Got %s\n", problem.a, answer)
+				fmt.Printf("Incorrect!.Expected %s Got %s\n", problem.a, answer)
 			} else {
 				score++
-				fmt.Println("Correct!!!!!")
 			}
 		}
 	}
+
 	return score
 }
 
