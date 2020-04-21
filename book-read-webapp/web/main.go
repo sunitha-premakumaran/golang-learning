@@ -1,8 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	cyoa "../cyoa"
@@ -10,14 +11,14 @@ import (
 
 func main() {
 	f, err := os.Open("gopher.json")
-
 	if err != nil {
 		panic(err)
 	}
-	decoder := json.NewDecoder(f)
-	var story cyoa.Story
-	if err := decoder.Decode(&story); err != nil {
+	story, error := cyoa.JSONStory(f)
+	if error != nil {
 		panic(err)
 	}
-	fmt.Printf("%v", story)
+	handler := cyoa.NewHandler(story)
+	fmt.Println("Starting server on :3000")
+	log.Fatal(http.ListenAndServe(":7070", handler))
 }
